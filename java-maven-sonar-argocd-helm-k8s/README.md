@@ -78,4 +78,5 @@ spec:
   server:
     service:
        𝘁𝘆𝗽𝗲: 𝗡𝗼𝗱𝗲𝗣𝗼𝗿𝘁
-
+minikube service example-argocd-server
+minikube service list 
