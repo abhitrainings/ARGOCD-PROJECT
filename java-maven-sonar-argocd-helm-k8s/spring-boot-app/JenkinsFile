@@ -8,8 +8,13 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        sh 'echo passed'
-        git branch: 'main', url: 'https://github.com/abhitrainings/ARGOCD-PROJECT.git'
+        script {
+          // Checkout the code from GitHub
+          git branch: 'main', url: 'https://github.com/abhitrainings/ARGOCD-PROJECT.git'
+          
+          // Ensure permissions are correct
+          sh 'chmod -R 777 java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/'
+        }
       }
     }
     stage('Build and Test') {
