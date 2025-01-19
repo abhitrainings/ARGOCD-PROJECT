@@ -13,7 +13,7 @@ pipeline {
           sh 'chmod -R 777 .'
           
           // Checkout the code from GitHub
-          git branch: 'main', url: 'https://github.com/abhitrainings/ARGOCD-PROJECT.git'
+          //git branch: 'main', url: 'https://github.com/abhitrainings/ARGOCD-PROJECT.git'
           
           // Ensure permissions are set correctly after checkout
           sh 'chmod -R 777 .'
