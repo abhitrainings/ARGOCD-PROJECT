@@ -8,16 +8,8 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        script {
-          // Ensure all permissions are correct at the start of the pipeline
-          sh 'chmod -R 777 .'
-          
-          // Checkout the code from GitHub
-          //git branch: 'main', url: 'https://github.com/abhitrainings/ARGOCD-PROJECT.git'
-          
-          // Ensure permissions are set correctly after checkout
-          sh 'chmod -R 777 .'
-        }
+        sh 'echo passed'
+        //git branch: 'main', url: 'https://github.com/abhitrainings/ARGOCD-PROJECT.git'
       }
     }
     stage('Build and Test') {
