@@ -63,3 +63,19 @@ usermod -aG docker ubuntu
 systemctl restart docker
 
 Once you are done with the above steps, it is better to restart Jenkins.
+
+ARGOCD:
+install argocd from operatorhub
+check pods 
+kubectl apply -f argocd-basic.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: example-argocd
+  labels:
+    example: basic
+spec:
+  server:
+    service:
+       𝘁𝘆𝗽𝗲: 𝗡𝗼𝗱𝗲𝗣𝗼𝗿𝘁
+
