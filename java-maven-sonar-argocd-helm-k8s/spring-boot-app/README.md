@@ -1,5 +1,15 @@
 
-OVERVIEW OF PROJECT
+
+Here are the step-by-step details to set up an end-to-end Jenkins pipeline for a Java application using SonarQube, Argo CD, Helm, and Kubernetes:
+
+Prerequisites:
+
+Java application code hosted on a Git repository
+Jenkins server
+Kubernetes cluster
+Helm package manager
+Argo CD
+Steps:
 
 1. Install the necessary Jenkins plugins:
    1.1 Git plugin
@@ -40,6 +50,8 @@ OVERVIEW OF PROJECT
 6. Configure Jenkins pipeline to integrate with Argo CD:
    6.1 Add the Argo CD API token to Jenkins credentials.
    6.2 Update the Jenkins pipeline to include the Argo CD deployment stage.
+
+This end-to-end Jenkins pipeline will automate the entire CI/CD process for a Java application, from code checkout to production deployment, using popular tools like SonarQube, Argo CD, Helm, and Kubernetes.
 
 7. Run the Jenkins pipeline:
    7.1 Trigger the Jenkins pipeline to start the CI/CD process for the Java application.
