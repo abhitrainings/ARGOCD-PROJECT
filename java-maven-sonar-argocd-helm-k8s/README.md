@@ -20,6 +20,10 @@ java -jar target/spring-boot-web.jar
 
 Next Steps:
 
+Install Jenkins.
+Pre-Requisites:
+
+Java (JDK)
 Run the below commands to install Java and Jenkins
 Install Java
 
@@ -37,6 +41,33 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update
 sudo apt-get install jenkins
+**Note: ** By default, Jenkins will not be accessible to the external world due to the inbound traffic restriction by AWS. Open port 8080 in the inbound traffic rules
+
+After you login to Jenkins, - Run the command to copy the Jenkins Admin Password - sudo cat /var/lib/jenkins/secrets/initialAdminPassword - Enter the Administrator password
+
+Click on Install suggested plugins
+
+Install the Docker Pipeline plugin in Jenkins:
+Log in to Jenkins.
+Go to Manage Jenkins > Manage Plugins.
+In the Available tab, search for "Docker Pipeline".
+Select the plugin and click the Install button.
+Restart Jenkins after the plugin is installed.
+
+Docker Slave Configuration
+Run the below command to Install Docker
+
+sudo apt update
+sudo apt install docker.io
+Grant Jenkins user and Ubuntu user permission to docker deamon.
+sudo su - 
+usermod -aG docker jenkins
+usermod -aG docker ubuntu
+systemctl restart docker
+Once you are done with the above steps, it is better to restart Jenkins.
+
+http://<ec2-instance-public-ip>:8080/restart
+The docker agent configuration is now successful.
 
 Configure a Sonar Server locally
 
