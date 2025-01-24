@@ -1,3 +1,6 @@
+
+OVERVIEW OF PROJECT
+
 1. Install the necessary Jenkins plugins:
    1.1 Git plugin
    1.2 Maven Integration plugin
