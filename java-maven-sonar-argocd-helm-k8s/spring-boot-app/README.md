@@ -83,3 +83,226 @@ By the end of this setup, you’ll have an automated CI/CD pipeline that takes y
 
 Now go ahead, set it up, and make your pipeline dreams a reality! 🎉
 
+
+
+
+
+# CI/CD Pipeline Implementation for Spring Boot Java Application
+
+Welcome to the sequel of our CI/CD pipeline setup! If the first document was the trailer, this is the blockbuster movie. 🎥 Grab your DevOps popcorn and get ready to execute every thrilling step in setting up and running the CI/CD pipeline for your **Spring Boot Java Application**. With a sprinkle of fun and crazy, let's get cracking! 💥
+
+---
+
+## 🎯 About the Application
+
+This is a simple **Spring Boot** application built using **Maven**. It follows the **MVC architecture** where controllers return a page with `title` and `message` attributes to the view.
+
+Dependencies? All handled elegantly with the `pom.xml` file. Think of it as the secret sauce in this recipe. 🌟
+
+---
+
+## 🔧 Execute Locally and Access via Browser
+
+### 1. Clone the Repository
+
+First things first, get your hands on the repo:
+
+```bash
+git clone https://github.com/abhitrainings/ARGOCD-PROJECT/tree/main/java-maven-sonar-argocd-helm-k8s
+cd java-maven-sonar-argocd-helm-k8s/sprint-boot-app
+```
+
+### 2. Build the Application
+
+Time to invoke Maven magic:
+
+```bash
+mvn clean package
+```
+
+This command packages the application and stores the artifacts in the `target/` directory.
+
+### 3. Run Locally
+
+With **Java 11** installed, you can execute the artifact directly:
+
+```bash
+java -jar target/spring-boot-web.jar
+```
+
+Access your app at [http://localhost:8080](http://localhost:8080). If it’s alive, congrats! You’ve just summoned your app into existence. 🧙
+
+---
+
+## 🛠️ Next Steps
+
+### 1. Install Jenkins
+
+#### Prerequisites
+
+Create an EC2 instance with at least **8GB RAM**. Then, install Java and Jenkins:
+
+```bash
+sudo apt update
+sudo apt install openjdk-17-jre
+```
+
+Verify Java installation:
+
+```bash
+java -version
+```
+
+Next, install Jenkins:
+
+```bash
+curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \  
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \  
+  https://pkg.jenkins.io/debian binary/ | sudo tee \  
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins
+```
+
+### 2. Open Jenkins to External World
+
+AWS blocks inbound traffic by default. To access Jenkins, open **port 8080** in the EC2 instance’s inbound traffic rules.
+
+#### Login Steps
+
+1. Retrieve the Jenkins admin password:
+
+   ```bash
+   sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+   ```
+
+2. Enter the admin password and click **Install Suggested Plugins**. You’re in! 🚪
+
+---
+
+### 3. Install Docker Pipeline Plugin
+
+#### Steps
+
+1. Log in to Jenkins.
+2. Navigate to **Manage Jenkins > Manage Plugins**.
+3. Search for **Docker Pipeline** in the Available tab.
+4. Install the plugin and restart Jenkins.
+
+### 4. Docker Slave Configuration
+
+#### Install Docker
+
+```bash
+sudo apt update
+sudo apt install docker.io
+```
+
+Grant Docker daemon permissions to Jenkins and Ubuntu users:
+
+```bash
+sudo su -
+usermod -aG docker jenkins
+usermod -aG docker ubuntu
+systemctl restart docker
+```
+
+Restart Jenkins:
+
+```bash
+http://<ec2-instance-public-ip>:8080/restart
+```
+
+**Congrats!** Your Docker agent configuration is now ready. 🚀
+
+---
+
+## 🦸 Configure SonarQube
+
+Let’s make your code spotless:
+
+1. Install SonarQube:
+
+   ```bash
+   sudo sh
+   apt install unzip
+   adduser sonarqube
+   sudo su - sonarqube
+   wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.0.54424.zip
+   unzip *
+   chmod -R 755 /home/sonarqube/sonarqube-9.4.0.54424
+   chown -R sonarqube:sonarqube /home/sonarqube/sonarqube-9.4.0.54424
+   cd sonarqube-9.4.0.54424/bin/linux-x86-64/
+   ./sonar.sh start
+   ```
+
+2. Access the SonarQube UI using your public IP and port.
+
+3. Generate a token and add it to Jenkins credentials.
+
+### 5. Update Jenkins Pipeline
+
+Update the `Jenkinsfile` to include SonarQube URL and credentials.
+
+Run the pipeline and ensure a Docker image gets pushed to Docker Hub. 🎉
+
+---
+
+## 🌀 Deploy with Argo CD
+
+### 1. Install Argo CD
+
+1. Deploy Argo CD in your Kubernetes cluster:
+
+   ```bash
+   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+   ```
+
+2. Expose the Argo CD service by modifying the service type to **NodePort**:
+
+   ```yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: argocd-server
+   spec:
+     type: NodePort
+   ```
+
+3. Apply the manifest:
+
+   ```bash
+   kubectl apply -f argocd-service.yaml
+   ```
+
+4. Wait until all pods are in the **Running** state:
+
+   ```bash
+   kubectl get pods -n argocd
+   ```
+
+### 2. Access Argo CD
+
+Retrieve the Argo CD admin password:
+
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+```
+
+Login at the Argo CD UI and create an application set. Configure it to monitor your Git repository and fetch the deployment manifests. When the application set is created, it will fetch the deployment manifests and deploy the application in the Kubernetes cluster under the specified namespace. This ensures that the application is deployed correctly. Whenever changes occur in the source code, a new Docker image is built and the manifest is updated. Argo CD detects these changes and automatically triggers the deployment in the Kubernetes cluster. This seamless workflow showcases how powerful and efficient this setup is! 🚀
+
+---
+
+## 🌟 Conclusion
+
+Congratulations! You now have an end-to-end CI/CD pipeline to:
+
+- Build and test your Spring Boot application.
+- Analyze code with SonarQube.
+- Package and deploy to Kubernetes with Argo CD.
+
+**"Why did the pipeline go to production?" Because it passed all its tests and said, "Helm yeah!"** 🚀
+
+
+
